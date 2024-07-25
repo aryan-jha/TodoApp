@@ -8,7 +8,7 @@ import java.util.Date
 data class TODO(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     val title : String,
     val createdAt : Date
 

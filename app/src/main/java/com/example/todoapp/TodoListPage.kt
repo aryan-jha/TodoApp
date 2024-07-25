@@ -35,6 +35,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.todoapp.DB.TODO
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -92,12 +93,12 @@ fun TodoListPage(viewModel: TodoViewModel) {
         todoList?.let {
             LazyColumn(
                 content = {
-                    itemsIndexed(it) { index: Int, item: Todo ->
 
-                        TodoItem(item = item, viewModel)
-
-
+                    itemsIndexed(it){index: Int, item: TODO ->
+                        TodoItem(item = item, viewModel = viewModel)
                     }
+
+
                 }
             )
         } ?: Text(
@@ -114,7 +115,7 @@ fun TodoListPage(viewModel: TodoViewModel) {
 }
 
 @Composable
-fun TodoItem(item: Todo,viewModel: TodoViewModel) {
+fun TodoItem(item: TODO,viewModel: TodoViewModel) {
 
     Row(
         modifier = Modifier
@@ -130,11 +131,9 @@ fun TodoItem(item: Todo,viewModel: TodoViewModel) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
+            val dateString = remember { SimpleDateFormat("HH:mm:ss:aa, dd/MM/yyyy", Locale.getDefault()).format(item.createdAt) }
             Text(
-                text = SimpleDateFormat(
-                    "HH:mm:ss:aa, dd/MM/yyyy",
-                    Locale.getDefault()
-                ).format(item.createdAt),
+                text = dateString,
                 fontSize = 12.sp,
                 color = Color.White
             )

@@ -3,24 +3,34 @@ package com.example.todoapp
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.todoapp.DB.TODO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.Instant
+import java.util.Date
 
 class TodoViewModel : ViewModel(){
 
-    private val _todoList = MutableLiveData<List<Todo>>()
-    val todoList : LiveData<List<Todo>> = _todoList
+    val todoDAOInstance = MainApplication.todoDatabase.getDao()
+
+    val todoList: LiveData<List<TODO>> = todoDAOInstance.getAllTodo()
+
 
     fun addTask(title : String){
-        TodoManager.addTask(title)
-        getAllTask()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDAOInstance.insertTodo(com.example.todoapp.DB.TODO(title = title, createdAt = Date.from(Instant.now())))
+        }
+
     }
 
     fun deleteTask(id : Int){
-        TodoManager.deleteTask(id)
-        getAllTask()
+        viewModelScope.launch(Dispatchers.IO) {
+            todoDAOInstance.deleteTodo(id = id)
+        }
     }
-    fun getAllTask(){
-        _todoList.value = TodoManager.getAllTask().reversed()
-    }
+
 
 
 
